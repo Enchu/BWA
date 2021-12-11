@@ -1,0 +1,141 @@
+﻿<Window x:Class="BrosuhkaWinApp.Windows.ProductsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BrosuhkaWinApp.Windows"
+        mc:Ignorable="d"
+        
+        FontFamily="Tahoma"
+        FontSize="13"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        
+        Title="Продукты" MinHeight="450" MinWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Margin="5">
+            <Image Source="/Resources/beauty_logo.png" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant"
+                   Margin="5, 0, 0, 0"/>
+
+            <TextBlock Text="Список продукции" FontSize="18" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Button Content="Выйти" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ExitClick"/>
+        </Grid>
+
+        <!-- Toolbar -->
+        <Grid Margin="5" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Label Content="Поиск"/>
+                <TextBox x:Name="SearchEntry" Width="100" TextChanged="SearchBoxTextChanged" Height="25"/>
+
+                <Label Content="Производитель"/>
+                <ComboBox x:Name="ManufacturersBox" SelectionChanged="FilterBoxChanged"/>
+
+                <Label Content="Цена"/>
+                <ComboBox x:Name="PriceBox" SelectionChanged="FilterBoxChanged"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Content -->
+        <Grid Grid.Row="2">
+            <TextBlock x:Name="NoResult" Text="Результат запроса отсутствует." FontSize="18" FontWeight="Medium"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ScrollViewer Margin="5">
+                <ItemsControl ItemsSource="{Binding Products}" x:Name="ProductsControl">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="15"
+                                    MouseMove="BorderMouseMove">
+                                <StackPanel HorizontalAlignment="Center">
+                                    
+                                    <Image Source="{Binding ProductPhoto1.Photo, 
+                                        UpdateSourceTrigger=PropertyChanged}" Height="150" Margin="10"/>
+                                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                                        <Run Text="{Binding Title}"/>
+                                        <Run Text="{Binding Product1.Count, StringFormat='(0)', Mode=OneWay}" FontWeight="Bold"/>
+                                    </TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" 
+                                               Margin="0, 10, 0, 0">
+                                        <Run Text="{Binding Cost, StringFormat='0.00'}" FontWeight="Bold"/>
+                                        <Run Text="рублей"/>
+                                    </TextBlock>
+
+                                    <Button Content="Редактировать" Background="#e1e4ff" Foreground="Black" Width="200"
+                                            Margin="5, 15, 5, 5" Click="EditButtonClick">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Content="Удалить" Width="200" Margin="5" Click="ProductDeleteButton">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Content="История продаж" Width="200" Margin="5" Click="ViewProductHistory">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+        
+        <!-- Status -->
+        <Grid Grid.Row="3" Margin="5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Run x:Name="ItemsShown" FontWeight="Bold"/>
+                <Run Text="из"/>
+                <Run x:Name="ItemsTotal" FontWeight="Bold"/>
+            </TextBlock>
+            <Button Content="Добавить продукт" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" Click="AddProductClick"/>
+        </Grid>
+    </Grid>
+</Window>
